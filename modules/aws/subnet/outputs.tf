@@ -13,3 +13,19 @@ output "id_private_subnet_1a" {
 output "id_private_subnet_1c" {
   value = aws_subnet.private_1c.id
 }
+
+output "cidr_block_public_subnet_1a" {
+  value = aws_subnet.public_1a.cidr_block
+}
+
+output "cidr_block_public_subnet_1c" {
+  value = aws_subnet.public_1c.cidr_block
+}
+
+output "cidr_block_private_subnet_1a" {
+  value = aws_subnet.private_1a.cidr_block
+}
+
+output "cidr_block_private_subnet_1c" {
+  value = aws_subnet.private_1c.cidr_block
+}

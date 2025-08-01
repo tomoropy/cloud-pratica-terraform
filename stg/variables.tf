@@ -10,4 +10,12 @@ locals {
     module.subnet.id_private_subnet_1a,
     module.subnet.id_private_subnet_1c
   ]
+  public_subnet_cidr_blocks = [
+    module.subnet.cidr_block_public_subnet_1a,
+    module.subnet.cidr_block_public_subnet_1a
+  ]
+  private_subnet_cidr_blocks = [
+    module.subnet.cidr_block_private_subnet_1a,
+    module.subnet.cidr_block_private_subnet_1c
+  ]
 }
