@@ -38,8 +38,8 @@ module "ecr" {
   env    = local.env
 }
 
-module "secret_manager" {
-  source = "../modules/aws/secret_manager"
+module "secrets_manager" {
+  source = "../modules/aws/secrets_manager"
   env    = local.env
 }
 
@@ -47,4 +47,10 @@ module "sqs" {
   source     = "../modules/aws/sqs"
   env        = local.env
   account_id = local.account_id
+}
+
+module "ses" {
+  source = "../modules/aws/ses"
+  domain = local.domain
+  env    = local.env
 }
