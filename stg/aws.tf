@@ -32,3 +32,8 @@ module "security_group" {
   private_subnet_cidr_blocks = local.private_subnet_cidr_blocks
   public_subnet_cidr_blocks  = local.public_subnet_cidr_blocks
 }
+
+module "ecr" {
+  source = "../modules/aws/ecr"
+  env    = local.env
+}
