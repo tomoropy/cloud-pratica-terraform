@@ -76,6 +76,39 @@ resource "aws_iam_policy" "ecs_write" {
   })
 }
 
+resource "aws_iam_policy" "ecs_run_task" {
+  name = "ecs-run-task-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "ecs:RunTask"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_policy" "pass_role_ecs_to_ecs_task" {
+  name = "pass-role-to-ecs-task-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "iam:PassRole"
+      ],
+      Condition = {
+        StringEquals = {
+          "iam:PassedToService" = "ecs-tasks.amazonaws.com"
+        }
+      },
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+
 resource "aws_iam_policy" "rds_start_stop" {
   name = "rds-start-stop-${var.env}"
   policy = jsonencode({
@@ -83,6 +116,21 @@ resource "aws_iam_policy" "rds_start_stop" {
       "Action" : [
         "rds:StopDBInstance",
         "rds:StartDBInstance"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+
+resource "aws_iam_policy" "batch_submit_job" {
+  name = "batch-submit-job-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "batch:SubmitJob"
       ],
       Effect   = "Allow"
       Resource = "*"

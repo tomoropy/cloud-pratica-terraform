@@ -110,3 +110,29 @@ resource "aws_iam_role_policy_attachment" "scheduler_cost_cutter" {
   policy_arn = each.value
   role       = aws_iam_role.scheduler_cost_cutter.name
 }
+
+resource "aws_iam_role" "scheduler_slack_metrics" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "scheduler.amazonaws.com"
+      }
+      Sid = ""
+    }]
+    Version = "2012-10-17"
+  })
+  name = "cp-scheduler-slack-metrics-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "scheduler_slack_metrics" {
+  for_each = {
+    jobs          = aws_iam_policy.batch_submit_job.arn
+    ecs           = aws_iam_policy.ecs_run_task.arn
+    pass_role_ecs = aws_iam_policy.pass_role_ecs_to_ecs_task.arn
+  }
+  policy_arn = each.value
+  role       = aws_iam_role.scheduler_slack_metrics.name
+}
+
