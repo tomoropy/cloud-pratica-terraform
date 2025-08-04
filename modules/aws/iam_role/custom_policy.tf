@@ -46,3 +46,48 @@ resource "aws_iam_policy" "sqs_read_write" {
   })
 }
 
+resource "aws_iam_policy" "ec2_start_stop" {
+  name = "ec2-start-stop-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "ec2:StartInstances",
+        "ec2:StopInstances"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_policy" "ecs_write" {
+  name = "ecs-write-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "ecs:UpdateService",
+        "ecs:RunTask"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_policy" "rds_start_stop" {
+  name = "rds-start-stop-${var.env}"
+  policy = jsonencode({
+    Statement = [{
+      "Action" : [
+        "rds:StopDBInstance",
+        "rds:StartDBInstance"
+      ],
+      Effect   = "Allow"
+      Resource = "*"
+    }]
+    Version = "2012-10-17"
+  })
+}
+

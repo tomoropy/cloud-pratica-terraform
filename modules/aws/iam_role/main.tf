@@ -85,3 +85,28 @@ resource "aws_iam_role_policy_attachment" "nat" {
   policy_arn = each.value
   role       = aws_iam_role.nat.name
 }
+
+resource "aws_iam_role" "scheduler_cost_cutter" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "scheduler.amazonaws.com"
+      }
+      Sid = ""
+    }]
+    Version = "2012-10-17"
+  })
+  name = "cp-scheduler-cost-cutter-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "scheduler_cost_cutter" {
+  for_each = {
+    ec2 = aws_iam_policy.ec2_start_stop.arn
+    ecs = aws_iam_policy.ecs_write.arn
+    rds = aws_iam_policy.rds_start_stop.arn
+  }
+  policy_arn = each.value
+  role       = aws_iam_role.scheduler_cost_cutter.name
+}
