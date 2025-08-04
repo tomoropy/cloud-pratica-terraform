@@ -60,12 +60,10 @@ module "iam_role" {
   env    = local.env
 }
 
-# import {
-#   to = module.iam_role.aws_iam_role.slack_metrics_backend
-#   id = "cp-slack-metrics-backend-stg"
-# }
-
-# import {
-#   to = module.iam_role.aws_iam_policy.s3_read
-#   id = "arn:aws:iam::645437362078:policy/s3-read-stg"
-# }
+module "ec2" {
+  source                     = "../modules/aws/ec2"
+  env                        = local.env
+  bastion_security_group_ids = [module.security_group.id_bastion]
+  nat_security_group_ids     = [module.security_group.id_nat]
+  subnet_id                  = module.subnet.id_public_subnet_1a
+}
