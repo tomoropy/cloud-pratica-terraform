@@ -81,3 +81,19 @@ module "rds_unit" {
   parameter_group_name = "cp-db-parameter-group-${local.env}"
   family               = "postgres16"
 }
+
+module "acm_tomoropy_com_us_east_1" {
+  source      = "../modules/aws/acm_unit"
+  domain_name = "*.${local.env}.${local.domain}"
+  providers = {
+    aws = aws.us_east_1
+  }
+}
+
+module "acm_tomoropy_com_ap_northeast_1" {
+  source      = "../modules/aws/acm_unit"
+  domain_name = "*.${local.env}.${local.domain}"
+  providers = {
+    aws = aws
+  }
+}
