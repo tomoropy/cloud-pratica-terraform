@@ -1,3 +1,23 @@
+resource "aws_iam_role" "administrator" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        AWS = "arn:aws:iam::043309350350:root"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+  name = "administrator-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "administrator" {
+  role       = aws_iam_role.administrator.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+
 resource "aws_iam_role" "slack_metrics_backend" {
   assume_role_policy = jsonencode({
     Statement = [{
