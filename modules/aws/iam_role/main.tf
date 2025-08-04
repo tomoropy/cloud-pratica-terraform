@@ -6,7 +6,6 @@ resource "aws_iam_role" "slack_metrics_backend" {
       Principal = {
         Service = "ecs-tasks.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -33,7 +32,6 @@ resource "aws_iam_role" "bastion" {
       Principal = {
         Service = "ec2.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -56,7 +54,6 @@ resource "aws_iam_role" "db_migrator" {
       Principal = {
         Service = "ecs-tasks.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -71,7 +68,6 @@ resource "aws_iam_role" "nat" {
       Principal = {
         Service = "ec2.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -94,7 +90,6 @@ resource "aws_iam_role" "scheduler_cost_cutter" {
       Principal = {
         Service = "scheduler.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -119,7 +114,6 @@ resource "aws_iam_role" "scheduler_slack_metrics" {
       Principal = {
         Service = "scheduler.amazonaws.com"
       }
-      Sid = ""
     }]
     Version = "2012-10-17"
   })
@@ -136,3 +130,49 @@ resource "aws_iam_role_policy_attachment" "scheduler_slack_metrics" {
   role       = aws_iam_role.scheduler_slack_metrics.name
 }
 
+resource "aws_iam_role" "slack_metrics_client" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "amplify.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+  name = "cp-slack-metrics-client-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "slack_metrics_client" {
+  for_each = {
+    logs = aws_iam_policy.cloud_watch_logs_write.arn
+  }
+  policy_arn = each.value
+  role       = aws_iam_role.slack_metrics_client.name
+}
+
+resource "aws_iam_role" "ecs_task_execution" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+  name = "ecs-task-execution-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  for_each = {
+    ecs_task_execution = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+    logs               = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+    s3                 = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    secrets_manager    = aws_iam_policy.secrets_manager_read.arn
+  }
+  policy_arn = each.value
+  role       = aws_iam_role.ecs_task_execution.name
+}
