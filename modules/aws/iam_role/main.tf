@@ -62,3 +62,26 @@ resource "aws_iam_role" "db_migrator" {
   })
   name = "cp-db-migrator-${var.env}"
 }
+
+resource "aws_iam_role" "nat" {
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+      Sid = ""
+    }]
+    Version = "2012-10-17"
+  })
+  name = "cp-nat-${var.env}"
+}
+
+resource "aws_iam_role_policy_attachment" "nat" {
+  for_each = {
+    ssm = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
+  policy_arn = each.value
+  role       = aws_iam_role.nat.name
+}
