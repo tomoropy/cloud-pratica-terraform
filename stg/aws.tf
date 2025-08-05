@@ -168,3 +168,11 @@ module "alb" {
   domain                         = local.domain
   arn_target_group_slack_metrics = module.target_group.arn_target_group_slack_metrics
 }
+
+module "s3" {
+  source = "../modules/aws/s3"
+  env    = local.env
+  slack_metrics = {
+    cloudfront_distribution_arn = "arn:aws:cloudfront::645437362078:distribution/ECLHHL9WGMHRX"
+  }
+}

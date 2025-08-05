@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.0.0" // 6.0.0 以上 6.1.0 未満 を許容
+      version = "~> 6.2.0" // 6.2.0 以上 6.3.0 未満 を許容
     }
     datadog = {
       source = "DataDog/datadog"
