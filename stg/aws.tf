@@ -105,7 +105,7 @@ module "ecs" {
     task_definition_arn = module.ecs_task_definition.arn_slack_metrics_api
     security_group_id   = module.security_group.id_slack_metrics_api
     subnet_ids          = local.private_subnet_ids
-    load_balancer_arn   = "arn:aws:elasticloadbalancing:ap-northeast-1:645437362078:targetgroup/slack-metrics-target-stg/58fc8bbdc5f3ceee"
+    load_balancer_arn   = module.target_group.arn_target_group_slack_metrics
   }
 }
 
@@ -151,4 +151,10 @@ module "event_bridge_scheduler" {
     ecs_cluster_arn_cloud_pratica_backend = module.ecs.ecs_cluster_arn
   }
   subnet_ids = local.private_subnet_ids
+}
+
+module "target_group" {
+  source = "../modules/aws/target_group"
+  env    = local.env
+  vpc_id = module.vpc.vpc_id
 }

@@ -29,7 +29,7 @@ resource "aws_ecs_service" "slack_metrics_api" {
     content {
       container_name   = "api"
       container_port   = 8080
-      target_group_arn = "arn:aws:elasticloadbalancing:ap-northeast-1:645437362078:targetgroup/slack-metrics-target-stg/58fc8bbdc5f3ceee"
+      target_group_arn = var.slack_metrics_api.load_balancer_arn
     }
   }
   network_configuration {
