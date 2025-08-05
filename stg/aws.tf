@@ -158,3 +158,13 @@ module "target_group" {
   env    = local.env
   vpc_id = module.vpc.vpc_id
 }
+
+module "alb" {
+  source                         = "../modules/aws/alb"
+  env                            = local.env
+  subnet_ids                     = local.public_subnet_ids
+  security_group_id              = module.security_group.id_alb
+  acm_arn                        = module.acm_tomoropy_com_ap_northeast_1.arn_acm_unit
+  domain                         = local.domain
+  arn_target_group_slack_metrics = module.target_group.arn_target_group_slack_metrics
+}
