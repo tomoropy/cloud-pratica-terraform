@@ -101,6 +101,12 @@ module "acm_tomoropy_com_ap_northeast_1" {
 module "ecs" {
   source = "../modules/aws/ecs"
   env    = local.env
+  slack_metrics_api = {
+    task_definition_arn = module.ecs_task_definition.arn_slack_metrics_api
+    security_group_id   = module.security_group.id_slack_metrics_api
+    subnet_ids          = local.private_subnet_ids
+    load_balancer_arn   = "arn:aws:elasticloadbalancing:ap-northeast-1:645437362078:targetgroup/slack-metrics-target-stg/58fc8bbdc5f3ceee"
+  }
 }
 
 module "ecs_task_definition" {
@@ -128,3 +134,4 @@ module "ecs_task_definition" {
   ecr_url_slack_metrics                = "${module.ecr.url_slack_metrics}:1ab283b" // 一旦ハードコード（のちにespressoでリファクタ予定）
   arn_cp_config_bucket                 = "arn:aws:s3:::cp-tomohiro-kawauchi-config-${local.env}"
 }
+
