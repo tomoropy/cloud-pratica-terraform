@@ -135,3 +135,20 @@ module "ecs_task_definition" {
   arn_cp_config_bucket                 = "arn:aws:s3:::cp-tomohiro-kawauchi-config-${local.env}"
 }
 
+module "event_bridge_scheduler" {
+  source = "../modules/aws/event_bridge_scheduler"
+  env    = local.env
+  slack_metrics = {
+    iam_role_arn                             = module.iam_role.ecs_task_role_arn_scheduler_slack_metrics
+    ecs_cluster_arn                          = module.ecs.ecs_cluster_arn
+    ecs_task_definition_arn_without_revision = module.ecs_task_definition.arn_without_revision_slack_metrics_batch
+    security_group_id                        = module.security_group.id_slack_metrics_api
+  }
+  cost_cutter = {
+    enable                                = true
+    iam_role_arn                          = module.iam_role.iam_role_arn_scheduler_cost_cutter
+    ec2_instance_ids                      = toset([module.ec2.id_bastion, module.ec2.id_nat])
+    ecs_cluster_arn_cloud_pratica_backend = module.ecs.ecs_cluster_arn
+  }
+  subnet_ids = local.private_subnet_ids
+}
