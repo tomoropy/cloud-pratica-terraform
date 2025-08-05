@@ -97,3 +97,34 @@ module "acm_tomoropy_com_ap_northeast_1" {
     aws = aws
   }
 }
+
+module "ecs" {
+  source = "../modules/aws/ecs"
+  env    = local.env
+}
+
+module "ecs_task_definition" {
+  source = "../modules/aws/ecs_task_definition"
+  env    = local.env
+  ecs_task_specs = {
+    db_migrator = {
+      cpu    = "1024"
+      memory = "3072"
+    }
+    slack_metrics_api = {
+      cpu    = "256"
+      memory = "512"
+    }
+    slack_metrics_batch = {
+      cpu    = "1024"
+      memory = "3072"
+    }
+  }
+  ecs_task_execution_role_arn          = module.iam_role.ecs_task_execution_role_arn
+  ecs_task_role_arn_db_migrator        = module.iam_role.ecs_task_role_arn_db_migrator
+  ecs_task_role_arn_slack_metrics      = module.iam_role.ecs_task_role_arn_slack_metrics
+  secrets_manager_arn_db_main_instance = module.secrets_manager.arn_db_main_instance
+  ecr_url_db_migrator                  = "${module.ecr.url_db_migrator}:1ab283b"   // 一旦ハードコード（のちにespressoでリファクタ予定）
+  ecr_url_slack_metrics                = "${module.ecr.url_slack_metrics}:1ab283b" // 一旦ハードコード（のちにespressoでリファクタ予定）
+  arn_cp_config_bucket                 = "arn:aws:s3:::cp-tomohiro-kawauchi-config-${local.env}"
+}
