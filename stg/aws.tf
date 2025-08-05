@@ -173,6 +173,14 @@ module "s3" {
   source = "../modules/aws/s3"
   env    = local.env
   slack_metrics = {
-    cloudfront_distribution_arn = "arn:aws:cloudfront::645437362078:distribution/ECLHHL9WGMHRX"
+    cloudfront_distribution_arn = module.cloudfront.arn_cloudfront_distribution
   }
+}
+
+module "cloudfront" {
+  source              = "../modules/aws/cloudfront"
+  env                 = local.env
+  domain              = local.domain
+  amplify_domain      = "develop.d33ekurvlhumfe.amplifyapp.com"
+  acm_certificate_arn = module.acm_tomoropy_com_us_east_1.arn_acm_unit
 }
