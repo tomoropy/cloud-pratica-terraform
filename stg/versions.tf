@@ -34,9 +34,3 @@ provider "aws" {
     }
   }
 }
-
-# provider "datadog" {
-#   api_key = local.datadog_key.api_key
-#   app_key = local.datadog_key.app_key
-#   api_url = "https://${local.datadog_site}"
-# }

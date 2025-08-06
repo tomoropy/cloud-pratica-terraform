@@ -2,8 +2,8 @@ resource "aws_ecs_task_definition" "db_migrator" {
   family                   = "db-migrator-${var.env}"
   cpu                      = var.ecs_task_specs.db_migrator.cpu
   memory                   = var.ecs_task_specs.db_migrator.memory
-  execution_role_arn       = var.ecs_task_execution_role_arn
-  task_role_arn            = var.ecs_task_role_arn_db_migrator
+  execution_role_arn       = var.arn_ecs_task_execution_role
+  task_role_arn            = var.arn_ecs_task_role_arn_db_migrator
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "db_migrator" {
       logDriver = "awslogs"
       options = {
         awslogs-create-group  = "true"
-        awslogs-group         = "/ecs/db-migrator-stg"
+        awslogs-group         = "/ecs/db-migrator-${var.env}"
         awslogs-region        = "ap-northeast-1"
         awslogs-stream-prefix = "ecs"
       }
@@ -46,8 +46,8 @@ resource "aws_ecs_task_definition" "slack_metrics_api" {
   family                   = "slack-metrics-api-${var.env}"
   cpu                      = var.ecs_task_specs.slack_metrics_api.cpu
   memory                   = var.ecs_task_specs.slack_metrics_api.memory
-  execution_role_arn       = var.ecs_task_execution_role_arn
-  task_role_arn            = var.ecs_task_role_arn_slack_metrics
+  execution_role_arn       = var.arn_ecs_task_execution_role
+  task_role_arn            = var.arn_ecs_task_role_arn_slack_metrics
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
@@ -164,8 +164,8 @@ resource "aws_ecs_task_definition" "slack_metrics_batch" {
   family                   = "slack-metrics-batch-${var.env}"
   cpu                      = var.ecs_task_specs.slack_metrics_batch.cpu
   memory                   = var.ecs_task_specs.slack_metrics_batch.memory
-  execution_role_arn       = var.ecs_task_execution_role_arn
-  task_role_arn            = var.ecs_task_role_arn_slack_metrics
+  execution_role_arn       = var.arn_ecs_task_execution_role
+  task_role_arn            = var.arn_ecs_task_role_arn_slack_metrics
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 

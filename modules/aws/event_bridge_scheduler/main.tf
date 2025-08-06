@@ -5,7 +5,7 @@ resource "aws_scheduler_schedule_group" "slack_metrics" {
 resource "aws_scheduler_schedule" "sync_workspaces" {
   name                         = "sync-workspace-${var.env}"
   group_name                   = "slack-metrics-${var.env}"
-  schedule_expression          = "cron(0 1 * * ? *)"
+  schedule_expression          = var.schedule_expression
   schedule_expression_timezone = "Asia/Tokyo"
   flexible_time_window {
     mode = "OFF"
@@ -61,7 +61,7 @@ resource "aws_scheduler_schedule" "start_db_instance_cp" {
     })
     role_arn = var.cost_cutter.iam_role_arn
     retry_policy {
-      maximum_event_age_in_seconds = 3600 # 1 hour
+      maximum_event_age_in_seconds = 3600
       maximum_retry_attempts       = 3
     }
   }
@@ -85,7 +85,7 @@ resource "aws_scheduler_schedule" "stop_db_instance_cp" {
     })
     role_arn = var.cost_cutter.iam_role_arn
     retry_policy {
-      maximum_event_age_in_seconds = 3600 # 1 hour
+      maximum_event_age_in_seconds = 3600
       maximum_retry_attempts       = 3
     }
   }

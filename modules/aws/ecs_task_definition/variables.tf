@@ -19,15 +19,15 @@ variable "ecs_task_specs" {
   })
 }
 
-variable "ecs_task_execution_role_arn" {
+variable "arn_ecs_task_execution_role" {
   type = string
 }
 
-variable "ecs_task_role_arn_db_migrator" {
+variable "arn_ecs_task_role_arn_db_migrator" {
   type = string
 }
 
-variable "ecs_task_role_arn_slack_metrics" {
+variable "arn_ecs_task_role_arn_slack_metrics" {
   type = string
 }
 

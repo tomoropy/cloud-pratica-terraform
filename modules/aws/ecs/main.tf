@@ -39,7 +39,7 @@ resource "aws_ecs_service" "slack_metrics_api" {
   }
   lifecycle {
     ignore_changes = [
-      desired_count,
+      desired_count, // コスト削減のため、desired_countの変動を無視
     ]
   }
 }

@@ -24,6 +24,11 @@ variable "cost_cutter" {
   })
 }
 
+variable "schedule_expression" {
+  type    = string
+  default = "cron(0 1 * * ? *)" // 毎日01:00に実行
+}
+
 locals {
   rds_identifier_cloud_pratica = "cloud-pratica-${var.env}"
 }

@@ -9,7 +9,7 @@ variable "instance_type" {
 
 variable "ami_id_amazon_linux" {
   type    = string
-  default = "ami-0f95ad36d6d54ceba" // Amazon Linux
+  default = "ami-0f95ad36d6d54ceba" // OS: Amazon Linux
 }
 
 variable "bastion_security_group_ids" {

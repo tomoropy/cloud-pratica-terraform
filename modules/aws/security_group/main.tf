@@ -12,7 +12,7 @@ locals {
       security_groups  = []
       self             = false
       to_port          = 0
-    },
+    }
   ]
 }
 
@@ -52,7 +52,7 @@ resource "aws_security_group" "nat" {
       prefix_list_ids  = []
       security_groups  = []
       self             = false
-    },
+    }
   ]
   egress = local.default_egress
   tags = {
@@ -75,7 +75,7 @@ resource "aws_security_group" "alb" {
       prefix_list_ids  = []
       security_groups  = []
       self             = false
-    },
+    }
   ]
   egress = local.default_egress
   tags = {
@@ -100,7 +100,7 @@ resource "aws_security_group" "slack_metrics_backend" {
         aws_security_group.alb.id
       ]
       self = false
-    },
+    }
   ]
   egress = local.default_egress
   tags = {
@@ -127,7 +127,7 @@ resource "aws_security_group" "db" {
         aws_security_group.slack_metrics_backend.id
       ])
       self = false
-    },
+    }
   ]
   egress = local.default_egress
   tags = {

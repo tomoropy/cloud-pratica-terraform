@@ -25,7 +25,6 @@ resource "aws_lb_listener" "https" {
 
 resource "aws_lb_listener_rule" "slack_metrics_api" {
   listener_arn = aws_lb_listener.https.arn
-  priority     = 2
   action {
     order = 1
     type  = "forward"

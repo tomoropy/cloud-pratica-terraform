@@ -17,7 +17,6 @@ resource "aws_iam_role_policy_attachment" "administrator" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-
 resource "aws_iam_role" "slack_metrics_backend" {
   assume_role_policy = jsonencode({
     Statement = [{

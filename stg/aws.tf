@@ -6,20 +6,20 @@ module "vpc" {
 module "subnet" {
   source = "../modules/aws/subnet"
   env    = local.env
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.vpc.id_vpc
 }
 
 module "igw" {
   source = "../modules/aws/internet_gateway"
   env    = local.env
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.vpc.id_vpc
 }
 
 module "route_table" {
   source               = "../modules/aws/route_table"
   env                  = local.env
-  vpc_id               = module.vpc.vpc_id
-  igw_id               = module.igw.igw_id
+  vpc_id               = module.vpc.id_vpc
+  id_igw               = module.igw.id_igw
   network_interface_id = "eni-0aedab9cb031ef16f"
   public_subnet_ids    = local.public_subnet_ids
   private_subnet_ids   = local.private_subnet_ids
@@ -28,7 +28,7 @@ module "route_table" {
 module "security_group" {
   source                     = "../modules/aws/security_group"
   env                        = local.env
-  vpc_id                     = module.vpc.vpc_id
+  vpc_id                     = module.vpc.id_vpc
   private_subnet_cidr_blocks = local.private_subnet_cidr_blocks
   public_subnet_cidr_blocks  = local.public_subnet_cidr_blocks
 }
@@ -126,9 +126,9 @@ module "ecs_task_definition" {
       memory = "3072"
     }
   }
-  ecs_task_execution_role_arn          = module.iam_role.ecs_task_execution_role_arn
-  ecs_task_role_arn_db_migrator        = module.iam_role.ecs_task_role_arn_db_migrator
-  ecs_task_role_arn_slack_metrics      = module.iam_role.ecs_task_role_arn_slack_metrics
+  arn_ecs_task_execution_role          = module.iam_role.arn_ecs_task_execution_role
+  arn_ecs_task_role_arn_db_migrator    = module.iam_role.arn_ecs_task_role_arn_db_migrator
+  arn_ecs_task_role_arn_slack_metrics  = module.iam_role.arn_ecs_task_role_arn_slack_metrics
   secrets_manager_arn_db_main_instance = module.secrets_manager.arn_db_main_instance
   ecr_url_db_migrator                  = "${module.ecr.url_db_migrator}:1ab283b"   // 一旦ハードコード（のちにespressoでリファクタ予定）
   ecr_url_slack_metrics                = "${module.ecr.url_slack_metrics}:1ab283b" // 一旦ハードコード（のちにespressoでリファクタ予定）
@@ -139,14 +139,14 @@ module "event_bridge_scheduler" {
   source = "../modules/aws/event_bridge_scheduler"
   env    = local.env
   slack_metrics = {
-    iam_role_arn                             = module.iam_role.ecs_task_role_arn_scheduler_slack_metrics
+    iam_role_arn                             = module.iam_role.arn_ecs_task_role_arn_scheduler_slack_metrics
     ecs_cluster_arn                          = module.ecs.ecs_cluster_arn
     ecs_task_definition_arn_without_revision = module.ecs_task_definition.arn_without_revision_slack_metrics_batch
     security_group_id                        = module.security_group.id_slack_metrics_api
   }
   cost_cutter = {
     enable                                = true
-    iam_role_arn                          = module.iam_role.iam_role_arn_scheduler_cost_cutter
+    iam_role_arn                          = module.iam_role.arn_iam_role_arn_scheduler_cost_cutter
     ec2_instance_ids                      = toset([module.ec2.id_bastion, module.ec2.id_nat])
     ecs_cluster_arn_cloud_pratica_backend = module.ecs.ecs_cluster_arn
   }
@@ -156,7 +156,7 @@ module "event_bridge_scheduler" {
 module "target_group" {
   source = "../modules/aws/target_group"
   env    = local.env
-  vpc_id = module.vpc.vpc_id
+  vpc_id = module.vpc.id_vpc
 }
 
 module "alb" {

@@ -20,9 +20,9 @@ resource "aws_cloudfront_distribution" "slack_metrics" {
   enabled         = true
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD"]
-    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" // AWSドキュメントに記載されている固定値
     cached_methods           = ["GET", "HEAD"]
-    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
+    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac" // AWSドキュメントに記載されている固定値
     target_origin_id         = "amplify-slack-metrics-${var.env}"
     viewer_protocol_policy   = "https-only"
     compress                 = true
@@ -32,7 +32,7 @@ resource "aws_cloudfront_distribution" "slack_metrics" {
   }
   ordered_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6" // AWSドキュメントに記載されている固定値
     cached_methods         = ["GET", "HEAD"]
     path_pattern           = "/static/*"
     target_origin_id       = "s3-slack-metrics-${var.env}"
