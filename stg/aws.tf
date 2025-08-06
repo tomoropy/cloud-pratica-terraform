@@ -184,3 +184,42 @@ module "cloudfront" {
   amplify_domain      = "develop.d33ekurvlhumfe.amplifyapp.com"
   acm_certificate_arn = module.acm_tomoropy_com_us_east_1.arn_acm_unit
 }
+
+module "route53" {
+  source = "../modules/aws/route53_unit"
+  env    = local.env
+  domain = local.domain
+  records = [
+    // slack-metrics-clinet(Amplify)
+    {
+      name = "${local.slack_metrics_host}"
+      type = "A"
+      alias = {
+        name                   = module.cloudfront.domain_name_slack_metrics_client
+        zone_id                = module.cloudfront.zone_id_us_east_1
+        evaluate_target_health = false
+      }
+    },
+    // slack-metrics-api(ECS)
+    {
+      name = "${local.slack_metrics_api_host}"
+      type = "A"
+      alias = {
+        name                   = "dualstack.${module.alb.alb_dns_name_tomoropy_com}"
+        zone_id                = module.alb.zone_id_ap_northeast_1
+        evaluate_target_health = true
+      }
+    },
+    // ACMの検証用
+    {
+      name   = module.acm_tomoropy_com_ap_northeast_1.validation_record_name
+      values = [module.acm_tomoropy_com_ap_northeast_1.validation_record_value]
+      type   = "CNAME"
+      ttl    = "300"
+    },
+  ]
+  ses = {
+    enable      = true
+    dkim_tokens = module.ses.dkim_tokens_tomoropy_com
+  }
+}
