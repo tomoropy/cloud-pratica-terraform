@@ -20,9 +20,9 @@ resource "aws_cloudfront_distribution" "slack_metrics" {
   enabled         = true
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD"]
-    cache_policy_id          = local.chache_policy_default_id
+    cache_policy_id          = local.cache_policy_id.caching_disabled
     cached_methods           = ["GET", "HEAD"]
-    origin_request_policy_id = local.origin_request_policy_id
+    origin_request_policy_id = local.origin_request_policy_id.all_viewer_except_host_header
     target_origin_id         = "amplify-slack-metrics-${var.env}"
     viewer_protocol_policy   = "https-only"
     compress                 = true
@@ -32,7 +32,7 @@ resource "aws_cloudfront_distribution" "slack_metrics" {
   }
   ordered_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
-    cache_policy_id        = local.chache_policy_static_id
+    cache_policy_id        = local.cache_policy_id.caching_optimized
     cached_methods         = ["GET", "HEAD"]
     path_pattern           = "/static/*"
     target_origin_id       = "s3-slack-metrics-${var.env}"
