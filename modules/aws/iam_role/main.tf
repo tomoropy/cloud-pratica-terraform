@@ -65,6 +65,11 @@ resource "aws_iam_role_policy_attachment" "bastion" {
   role       = aws_iam_role.bastion.name
 }
 
+resource "aws_iam_instance_profile" "bastion_profile" {
+  name = "cp-bastion-${var.env}"
+  role = aws_iam_role.bastion.name
+}
+
 resource "aws_iam_role" "db_migrator" {
   assume_role_policy = jsonencode({
     Statement = [{
@@ -99,6 +104,11 @@ resource "aws_iam_role_policy_attachment" "nat" {
   }
   policy_arn = each.value
   role       = aws_iam_role.nat.name
+}
+
+resource "aws_iam_instance_profile" "nat_profile" {
+  name = "cp-nat-${var.env}"
+  role = aws_iam_role.nat.name
 }
 
 resource "aws_iam_role" "scheduler_cost_cutter" {

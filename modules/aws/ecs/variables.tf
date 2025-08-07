@@ -8,5 +8,6 @@ variable "slack_metrics_api" {
     security_group_id   = string
     subnet_ids          = list(string)
     load_balancer_arn   = string
+    capacity_provider   = string
   })
 }
