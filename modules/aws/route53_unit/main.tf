@@ -20,6 +20,7 @@ resource "aws_route53_record" "record" {
 }
 
 resource "aws_route53_record" "mail_env_tomoropy_com_TXT" {
+  count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
   name    = "mail.${var.env}.${var.domain}"
   type    = "TXT"
@@ -28,6 +29,7 @@ resource "aws_route53_record" "mail_env_tomoropy_com_TXT" {
 }
 
 resource "aws_route53_record" "mail_env_tomoropy_com_MX" {
+  count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
   name    = "mail.${var.env}.${var.domain}"
   type    = "MX"
@@ -36,6 +38,7 @@ resource "aws_route53_record" "mail_env_tomoropy_com_MX" {
 }
 
 resource "aws_route53_record" "dmarc_TXT" {
+  count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
   name    = "_dmarc.${var.env}.${var.domain}"
   type    = "TXT"
@@ -44,8 +47,8 @@ resource "aws_route53_record" "dmarc_TXT" {
 }
 
 resource "aws_route53_record" "dkim_CNAME" {
-  zone_id = aws_route53_zone.tomoropy_com.zone_id
   count   = var.ses.enable ? 3 : 0
+  zone_id = aws_route53_zone.tomoropy_com.zone_id
   name    = "${var.ses.dkim_tokens[count.index]}._domainkey.${var.env}.${var.domain}"
   type    = "CNAME"
   ttl     = 1800
