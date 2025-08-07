@@ -18,7 +18,7 @@ resource "aws_ecs_service" "slack_metrics_api" {
   desired_count   = 1
   capacity_provider_strategy {
     base              = 0
-    capacity_provider = "FARGATE_SPOT"
+    capacity_provider = var.slack_metrics_api.capacity_provider
     weight            = 1
   }
   deployment_controller {

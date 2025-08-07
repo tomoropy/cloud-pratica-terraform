@@ -6,6 +6,7 @@ locals {
   base_host              = "${local.env}.${local.domain}"
   slack_metrics_host     = "sm.${local.base_host}"
   slack_metrics_api_host = "sm-api.${local.base_host}"
+  amplify_domain         = "develop.d33ekurvlhumfe.amplifyapp.com"
   public_subnet_ids = [
     module.subnet.id_public_subnet_1a,
     module.subnet.id_public_subnet_1c

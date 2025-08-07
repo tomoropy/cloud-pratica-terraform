@@ -20,7 +20,7 @@ module "route_table" {
   env                  = local.env
   vpc_id               = module.vpc.id_vpc
   id_igw               = module.igw.id_igw
-  network_interface_id = "eni-0aedab9cb031ef16f"
+  network_interface_id = module.ec2.id_nat_network_interface
   public_subnet_ids    = local.public_subnet_ids
   private_subnet_ids   = local.private_subnet_ids
 }
@@ -106,6 +106,7 @@ module "ecs" {
     security_group_id   = module.security_group.id_slack_metrics_api
     subnet_ids          = local.private_subnet_ids
     load_balancer_arn   = module.target_group.arn_target_group_slack_metrics
+    capacity_provider   = "FARGATE_SPOT"
   }
 }
 
@@ -181,7 +182,7 @@ module "cloudfront" {
   source              = "../modules/aws/cloudfront"
   env                 = local.env
   domain              = local.domain
-  amplify_domain      = "develop.d33ekurvlhumfe.amplifyapp.com"
+  amplify_domain      = local.amplify_domain
   acm_certificate_arn = module.acm_tomoropy_com_us_east_1.arn_acm_unit
 }
 
