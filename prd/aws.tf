@@ -9,21 +9,22 @@ module "subnet" {
   vpc_id = module.vpc.id_vpc
 }
 
-# module "igw" {
-#   source = "../modules/aws/internet_gateway"
-#   env    = local.env
-#   vpc_id = module.vpc.id_vpc
-# }
+module "igw" {
+  source = "../modules/aws/internet_gateway"
+  env    = local.env
+  vpc_id = module.vpc.id_vpc
+}
 
-# module "route_table" {
-#   source               = "../modules/aws/route_table"
-#   env                  = local.env
-#   vpc_id               = module.vpc.id_vpc
-#   id_igw               = module.igw.id_igw
-#   network_interface_id = "eni-0aedab9cb031ef16f"
-#   public_subnet_ids    = local.public_subnet_ids
-#   private_subnet_ids   = local.private_subnet_ids
-# }
+module "route_table" {
+  source = "../modules/aws/route_table"
+  env    = local.env
+  vpc_id = module.vpc.id_vpc
+  id_igw = module.igw.id_igw
+  # network_interface_id = module.ec2.id_nat_network_interface
+  network_interface_id = null
+  public_subnet_ids    = local.public_subnet_ids
+  private_subnet_ids   = local.private_subnet_ids
+}
 
 # module "security_group" {
 #   source                     = "../modules/aws/security_group"
@@ -106,6 +107,7 @@ module "subnet" {
 #     security_group_id   = module.security_group.id_slack_metrics_api
 #     subnet_ids          = local.private_subnet_ids
 #     load_balancer_arn   = module.target_group.arn_target_group_slack_metrics
+#     capacity_provider   = "FARGATE_SPOT"
 #   }
 # }
 
@@ -181,7 +183,7 @@ module "subnet" {
 #   source              = "../modules/aws/cloudfront"
 #   env                 = local.env
 #   domain              = local.domain
-#   amplify_domain      = "develop.d33ekurvlhumfe.amplifyapp.com"
+#   amplify_domain      = local.amplify_domain
 #   acm_certificate_arn = module.acm_tomoropy_com_us_east_1.arn_acm_unit
 # }
 
