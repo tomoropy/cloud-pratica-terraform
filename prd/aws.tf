@@ -26,29 +26,29 @@ module "route_table" {
   private_subnet_ids   = local.private_subnet_ids
 }
 
-# module "security_group" {
-#   source                     = "../modules/aws/security_group"
-#   env                        = local.env
-#   vpc_id                     = module.vpc.id_vpc
-#   private_subnet_cidr_blocks = local.private_subnet_cidr_blocks
-#   public_subnet_cidr_blocks  = local.public_subnet_cidr_blocks
-# }
+module "security_group" {
+  source                     = "../modules/aws/security_group"
+  env                        = local.env
+  vpc_id                     = module.vpc.id_vpc
+  private_subnet_cidr_blocks = local.private_subnet_cidr_blocks
+  public_subnet_cidr_blocks  = local.public_subnet_cidr_blocks
+}
 
-# module "ecr" {
-#   source = "../modules/aws/ecr"
-#   env    = local.env
-# }
+module "ecr" {
+  source = "../modules/aws/ecr"
+  env    = local.env
+}
 
 # module "secrets_manager" {
 #   source = "../modules/aws/secrets_manager"
 #   env    = local.env
 # }
 
-# module "sqs" {
-#   source     = "../modules/aws/sqs"
-#   env        = local.env
-#   account_id = local.account_id
-# }
+module "sqs" {
+  source     = "../modules/aws/sqs"
+  env        = local.env
+  account_id = local.account_id
+}
 
 # module "ses" {
 #   source = "../modules/aws/ses"
@@ -56,10 +56,10 @@ module "route_table" {
 #   env    = local.env
 # }
 
-# module "iam_role" {
-#   source = "../modules/aws/iam_role"
-#   env    = local.env
-# }
+module "iam_role" {
+  source = "../modules/aws/iam_role"
+  env    = local.env
+}
 
 # module "ec2" {
 #   source                     = "../modules/aws/ec2"
@@ -171,13 +171,13 @@ module "route_table" {
 #   arn_target_group_slack_metrics = module.target_group.arn_target_group_slack_metrics
 # }
 
-# module "s3" {
-#   source = "../modules/aws/s3"
-#   env    = local.env
-#   slack_metrics = {
-#     cloudfront_distribution_arn = module.cloudfront.arn_cloudfront_distribution
-#   }
-# }
+module "s3" {
+  source = "../modules/aws/s3"
+  env    = local.env
+  slack_metrics = {
+    # cloudfront_distribution_arn = module.cloudfront.arn_cloudfront_distribution
+  }
+}
 
 # module "cloudfront" {
 #   source              = "../modules/aws/cloudfront"
@@ -187,41 +187,41 @@ module "route_table" {
 #   acm_certificate_arn = module.acm_tomoropy_com_us_east_1.arn_acm_unit
 # }
 
-# module "route53" {
-#   source = "../modules/aws/route53_unit"
-#   env    = local.env
-#   domain = local.domain
-#   records = [
-#     // slack-metrics-clinet(Amplify)
-#     {
-#       name = "${local.slack_metrics_host}"
-#       type = "A"
-#       alias = {
-#         name                   = module.cloudfront.domain_name_slack_metrics_client
-#         zone_id                = module.cloudfront.zone_id_us_east_1
-#         evaluate_target_health = false
-#       }
-#     },
-#     // slack-metrics-api(ECS)
-#     {
-#       name = "${local.slack_metrics_api_host}"
-#       type = "A"
-#       alias = {
-#         name                   = "dualstack.${module.alb.alb_dns_name_tomoropy_com}"
-#         zone_id                = module.alb.zone_id_ap_northeast_1
-#         evaluate_target_health = true
-#       }
-#     },
-#     // ACMの検証用
-#     {
-#       name   = module.acm_tomoropy_com_ap_northeast_1.validation_record_name
-#       values = [module.acm_tomoropy_com_ap_northeast_1.validation_record_value]
-#       type   = "CNAME"
-#       ttl    = "300"
-#     },
-#   ]
-#   ses = {
-#     enable      = true
-#     dkim_tokens = module.ses.dkim_tokens_tomoropy_com
-#   }
-# }
+module "route53" {
+  source = "../modules/aws/route53_unit"
+  env    = local.env
+  domain = local.domain
+  records = [
+    # // slack-metrics-clinet(Amplify)
+    # {
+    #   name = "${local.slack_metrics_host}"
+    #   type = "A"
+    #   alias = {
+    #     name                   = module.cloudfront.domain_name_slack_metrics_client
+    #     zone_id                = module.cloudfront.zone_id_us_east_1
+    #     evaluate_target_health = false
+    #   }
+    # },
+    # // slack-metrics-api(ECS)
+    # {
+    #   name = "${local.slack_metrics_api_host}"
+    #   type = "A"
+    #   alias = {
+    #     name                   = "dualstack.${module.alb.alb_dns_name_tomoropy_com}"
+    #     zone_id                = module.alb.zone_id_ap_northeast_1
+    #     evaluate_target_health = true
+    #   }
+    # },
+    # // ACMの検証用
+    # {
+    #   name   = module.acm_tomoropy_com_ap_northeast_1.validation_record_name
+    #   values = [module.acm_tomoropy_com_ap_northeast_1.validation_record_value]
+    #   type   = "CNAME"
+    #   ttl    = "300"
+    # },
+  ]
+  # ses = {
+  # enable      = true
+  # dkim_tokens = module.ses.dkim_tokens_tomoropy_com
+  # }
+}

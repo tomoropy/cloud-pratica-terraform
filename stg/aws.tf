@@ -189,7 +189,7 @@ module "cloudfront" {
 module "route53" {
   source = "../modules/aws/route53_unit"
   env    = local.env
-  domain = local.domain
+  domain = "${local.env}.${local.domain}"
   records = [
     // slack-metrics-clinet(Amplify)
     {

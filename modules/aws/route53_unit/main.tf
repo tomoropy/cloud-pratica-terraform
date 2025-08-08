@@ -1,5 +1,5 @@
 resource "aws_route53_zone" "tomoropy_com" {
-  name = "${var.env}.${var.domain}"
+  name = var.domain
 }
 
 resource "aws_route53_record" "record" {
