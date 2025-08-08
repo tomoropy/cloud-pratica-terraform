@@ -8,3 +8,20 @@ locals {
     all_viewer_except_host_header = "b689b0a8-53d0-40ab-baf2-68738e2966ac"
   }
 }
+
+variable "env" {
+  type = string
+}
+
+variable "domain" {
+  type = string
+}
+
+variable "amplify_domain" {
+  type = string
+}
+
+variable "acm_certificate_arn" {
+  type = string
+}
+

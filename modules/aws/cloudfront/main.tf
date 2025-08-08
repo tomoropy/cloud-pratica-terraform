@@ -1,21 +1,5 @@
-variable "env" {
-  type = string
-}
-
-variable "domain" {
-  type = string
-}
-
-variable "amplify_domain" {
-  type = string
-}
-
-variable "acm_certificate_arn" {
-  type = string
-}
-
 resource "aws_cloudfront_distribution" "slack_metrics" {
-  aliases         = ["sm.${var.env}.${var.domain}"]
+  aliases         = ["sm.${var.domain}"]
   is_ipv6_enabled = true
   enabled         = true
   default_cache_behavior {

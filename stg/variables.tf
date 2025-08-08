@@ -2,10 +2,9 @@ locals {
   env                    = "stg"
   account_id             = "645437362078"
   region                 = "ap-northeast-1"
-  domain                 = "tomoropy.com"
-  base_host              = "${local.env}.${local.domain}"
-  slack_metrics_host     = "sm.${local.base_host}"
-  slack_metrics_api_host = "sm-api.${local.base_host}"
+  domain                 = "stg.tomoropy.com"
+  slack_metrics_host     = "sm.${local.domain}"
+  slack_metrics_api_host = "sm-api.${local.domain}"
   amplify_domain         = "develop.d33ekurvlhumfe.amplifyapp.com"
   public_subnet_ids = [
     module.subnet.id_public_subnet_1a,

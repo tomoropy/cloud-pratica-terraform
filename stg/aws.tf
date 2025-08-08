@@ -84,7 +84,7 @@ module "rds_unit" {
 
 module "acm_tomoropy_com_us_east_1" {
   source      = "../modules/aws/acm_unit"
-  domain_name = "*.${local.env}.${local.domain}"
+  domain_name = "*.${local.domain}"
   providers = {
     aws = aws.us_east_1
   }
@@ -92,7 +92,7 @@ module "acm_tomoropy_com_us_east_1" {
 
 module "acm_tomoropy_com_ap_northeast_1" {
   source      = "../modules/aws/acm_unit"
-  domain_name = "*.${local.env}.${local.domain}"
+  domain_name = "*.${local.domain}"
   providers = {
     aws = aws
   }
@@ -189,7 +189,7 @@ module "cloudfront" {
 module "route53" {
   source = "../modules/aws/route53_unit"
   env    = local.env
-  domain = "${local.env}.${local.domain}"
+  domain = local.domain
   records = [
     // slack-metrics-clinet(Amplify)
     {

@@ -22,7 +22,7 @@ resource "aws_route53_record" "record" {
 resource "aws_route53_record" "mail_env_tomoropy_com_TXT" {
   count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
-  name    = "mail.${var.env}.${var.domain}"
+  name    = "mail.${var.domain}"
   type    = "TXT"
   ttl     = 300
   records = ["v=spf1 include:amazonses.com ~all"]
@@ -31,7 +31,7 @@ resource "aws_route53_record" "mail_env_tomoropy_com_TXT" {
 resource "aws_route53_record" "mail_env_tomoropy_com_MX" {
   count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
-  name    = "mail.${var.env}.${var.domain}"
+  name    = "mail.${var.domain}"
   type    = "MX"
   ttl     = 300
   records = ["10 feedback-smtp.ap-northeast-1.amazonses.com"]
@@ -40,7 +40,7 @@ resource "aws_route53_record" "mail_env_tomoropy_com_MX" {
 resource "aws_route53_record" "dmarc_TXT" {
   count   = var.ses.enable ? 1 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
-  name    = "_dmarc.${var.env}.${var.domain}"
+  name    = "_dmarc.${var.domain}"
   type    = "TXT"
   ttl     = 300
   records = ["v=DMARC1; p=none;"]
@@ -49,7 +49,7 @@ resource "aws_route53_record" "dmarc_TXT" {
 resource "aws_route53_record" "dkim_CNAME" {
   count   = var.ses.enable ? 3 : 0
   zone_id = aws_route53_zone.tomoropy_com.zone_id
-  name    = "${var.ses.dkim_tokens[count.index]}._domainkey.${var.env}.${var.domain}"
+  name    = "${var.ses.dkim_tokens[count.index]}._domainkey.${var.domain}"
   type    = "CNAME"
   ttl     = 1800
   records = ["${var.ses.dkim_tokens[count.index]}.dkim.amazonses.com"]

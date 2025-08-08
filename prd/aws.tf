@@ -39,10 +39,10 @@ module "ecr" {
   env    = local.env
 }
 
-# module "secrets_manager" {
-#   source = "../modules/aws/secrets_manager"
-#   env    = local.env
-# }
+module "secrets_manager" {
+  source = "../modules/aws/secrets_manager"
+  env    = local.env
+}
 
 module "sqs" {
   source     = "../modules/aws/sqs"
@@ -50,11 +50,11 @@ module "sqs" {
   account_id = local.account_id
 }
 
-# module "ses" {
-#   source = "../modules/aws/ses"
-#   domain = local.domain
-#   env    = local.env
-# }
+module "ses" {
+  source = "../modules/aws/ses"
+  domain = local.domain
+  env    = local.env
+}
 
 module "iam_role" {
   source = "../modules/aws/iam_role"
@@ -220,8 +220,8 @@ module "route53" {
     #   ttl    = "300"
     # },
   ]
-  # ses = {
-  # enable      = true
-  # dkim_tokens = module.ses.dkim_tokens_tomoropy_com
-  # }
+  ses = {
+    enable      = true
+    dkim_tokens = module.ses.dkim_tokens_tomoropy_com
+  }
 }
