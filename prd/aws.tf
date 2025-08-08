@@ -16,12 +16,11 @@ module "igw" {
 }
 
 module "route_table" {
-  source = "../modules/aws/route_table"
-  env    = local.env
-  vpc_id = module.vpc.id_vpc
-  id_igw = module.igw.id_igw
-  # network_interface_id = module.ec2.id_nat_network_interface
-  network_interface_id = null
+  source               = "../modules/aws/route_table"
+  env                  = local.env
+  vpc_id               = module.vpc.id_vpc
+  id_igw               = module.igw.id_igw
+  network_interface_id = module.ec2.id_nat_network_interface
   public_subnet_ids    = local.public_subnet_ids
   private_subnet_ids   = local.private_subnet_ids
 }
@@ -61,13 +60,21 @@ module "iam_role" {
   env    = local.env
 }
 
-# module "ec2" {
-#   source                     = "../modules/aws/ec2"
-#   env                        = local.env
-#   bastion_security_group_ids = [module.security_group.id_bastion]
-#   nat_security_group_ids     = [module.security_group.id_nat]
-#   subnet_id                  = module.subnet.id_public_subnet_1a
-# }
+module "ec2" {
+  source           = "../modules/aws/ec2"
+  env              = local.env
+  public_subnet_id = module.subnet.id_public_subnet_1a
+  bastion = {
+    ami_id               = "ami-0ea4bbc4ed017a790"
+    security_group_id    = module.security_group.id_bastion
+    iam_instance_profile = "cp-bastion-${local.env}"
+  }
+  nat_1a = {
+    ami_id               = "ami-058bb9168e463f481"
+    security_group_id    = module.security_group.id_nat
+    iam_instance_profile = "cp-nat-${local.env}"
+  }
+}
 
 # module "rds_unit" {
 #   source               = "../modules/aws/rds_unit"
@@ -83,21 +90,21 @@ module "iam_role" {
 #   family               = "postgres16"
 # }
 
-# module "acm_tomoropy_com_us_east_1" {
-#   source      = "../modules/aws/acm_unit"
-#   domain_name = "*.${local.env}.${local.domain}"
-#   providers = {
-#     aws = aws.us_east_1
-#   }
-# }
+module "acm_tomoropy_com_us_east_1" {
+  source      = "../modules/aws/acm_unit"
+  domain_name = "*.${local.domain}"
+  providers = {
+    aws = aws.us_east_1
+  }
+}
 
-# module "acm_tomoropy_com_ap_northeast_1" {
-#   source      = "../modules/aws/acm_unit"
-#   domain_name = "*.${local.env}.${local.domain}"
-#   providers = {
-#     aws = aws
-#   }
-# }
+module "acm_tomoropy_com_ap_northeast_1" {
+  source      = "../modules/aws/acm_unit"
+  domain_name = "*.${local.domain}"
+  providers = {
+    aws = aws
+  }
+}
 
 # module "ecs" {
 #   source = "../modules/aws/ecs"
@@ -212,13 +219,13 @@ module "route53" {
     #     evaluate_target_health = true
     #   }
     # },
-    # // ACMの検証用
-    # {
-    #   name   = module.acm_tomoropy_com_ap_northeast_1.validation_record_name
-    #   values = [module.acm_tomoropy_com_ap_northeast_1.validation_record_value]
-    #   type   = "CNAME"
-    #   ttl    = "300"
-    # },
+    // ACMの検証用
+    {
+      name   = module.acm_tomoropy_com_ap_northeast_1.validation_record_name
+      values = [module.acm_tomoropy_com_ap_northeast_1.validation_record_value]
+      type   = "CNAME"
+      ttl    = "300"
+    },
   ]
   ses = {
     enable      = true

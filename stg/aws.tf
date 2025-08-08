@@ -61,11 +61,17 @@ module "iam_role" {
 }
 
 module "ec2" {
-  source                     = "../modules/aws/ec2"
-  env                        = local.env
-  bastion_security_group_ids = [module.security_group.id_bastion]
-  nat_security_group_ids     = [module.security_group.id_nat]
-  subnet_id                  = module.subnet.id_public_subnet_1a
+  source           = "../modules/aws/ec2"
+  env              = local.env
+  public_subnet_id = module.subnet.id_public_subnet_1a
+  bastion = {
+    security_group_id    = module.security_group.id_bastion
+    iam_instance_profile = "cp-bastion-${local.env}"
+  }
+  nat_1a = {
+    security_group_id    = module.security_group.id_nat
+    iam_instance_profile = "cp-nat-${local.env}"
+  }
 }
 
 module "rds_unit" {
