@@ -76,19 +76,19 @@ module "ec2" {
   }
 }
 
-# module "rds_unit" {
-#   source               = "../modules/aws/rds_unit"
-#   env                  = local.env
-#   identifier           = "cloud-pratica-${local.env}"
-#   engine_version       = "16.8"
-#   private_subnet_ids   = local.private_subnet_ids
-#   security_group_ids   = [module.security_group.id_db]
-#   username             = "postgres"
-#   db_name              = "slack_metrics"
-#   subnet_group_name    = "cp-db-subnet-group-${local.env}"
-#   parameter_group_name = "cp-db-parameter-group-${local.env}"
-#   family               = "postgres16"
-# }
+module "rds_unit" {
+  source               = "../modules/aws/rds_unit"
+  env                  = local.env
+  identifier           = "cloud-pratica-${local.env}"
+  engine_version       = "16.8"
+  private_subnet_ids   = local.private_subnet_ids
+  security_group_ids   = [module.security_group.id_db]
+  username             = "postgres"
+  db_name              = "slack_metrics"
+  subnet_group_name    = "cp-db-subnet-group-${local.env}"
+  parameter_group_name = "cp-db-parameter-group-${local.env}"
+  family               = "postgres16"
+}
 
 module "acm_tomoropy_com_us_east_1" {
   source      = "../modules/aws/acm_unit"
@@ -106,43 +106,43 @@ module "acm_tomoropy_com_ap_northeast_1" {
   }
 }
 
-# module "ecs" {
-#   source = "../modules/aws/ecs"
-#   env    = local.env
-#   slack_metrics_api = {
-#     task_definition_arn = module.ecs_task_definition.arn_slack_metrics_api
-#     security_group_id   = module.security_group.id_slack_metrics_api
-#     subnet_ids          = local.private_subnet_ids
-#     load_balancer_arn   = module.target_group.arn_target_group_slack_metrics
-#     capacity_provider   = "FARGATE_SPOT"
-#   }
-# }
+module "ecs" {
+  source = "../modules/aws/ecs"
+  env    = local.env
+  slack_metrics_api = {
+    task_definition_arn = module.ecs_task_definition.arn_slack_metrics_api
+    security_group_id   = module.security_group.id_slack_metrics_api
+    subnet_ids          = local.private_subnet_ids
+    load_balancer_arn   = module.target_group.arn_target_group_slack_metrics
+    capacity_provider   = "FARGATE_SPOT"
+  }
+}
 
-# module "ecs_task_definition" {
-#   source = "../modules/aws/ecs_task_definition"
-#   env    = local.env
-#   ecs_task_specs = {
-#     db_migrator = {
-#       cpu    = "1024"
-#       memory = "3072"
-#     }
-#     slack_metrics_api = {
-#       cpu    = "256"
-#       memory = "512"
-#     }
-#     slack_metrics_batch = {
-#       cpu    = "1024"
-#       memory = "3072"
-#     }
-#   }
-#   arn_ecs_task_execution_role          = module.iam_role.arn_ecs_task_execution_role
-#   arn_ecs_task_role_arn_db_migrator    = module.iam_role.arn_ecs_task_role_arn_db_migrator
-#   arn_ecs_task_role_arn_slack_metrics  = module.iam_role.arn_ecs_task_role_arn_slack_metrics
-#   secrets_manager_arn_db_main_instance = module.secrets_manager.arn_db_main_instance
-#   ecr_url_db_migrator                  = "${module.ecr.url_db_migrator}:1ab283b"   // 一旦ハードコード（のちにespressoでリファクタ予定）
-#   ecr_url_slack_metrics                = "${module.ecr.url_slack_metrics}:1ab283b" // 一旦ハードコード（のちにespressoでリファクタ予定）
-#   arn_cp_config_bucket                 = "arn:aws:s3:::cp-tomohiro-kawauchi-config-${local.env}"
-# }
+module "ecs_task_definition" {
+  source = "../modules/aws/ecs_task_definition"
+  env    = local.env
+  ecs_task_specs = {
+    db_migrator = {
+      cpu    = "1024"
+      memory = "3072"
+    }
+    slack_metrics_api = {
+      cpu    = "256"
+      memory = "512"
+    }
+    slack_metrics_batch = {
+      cpu    = "1024"
+      memory = "3072"
+    }
+  }
+  arn_ecs_task_execution_role          = module.iam_role.arn_ecs_task_execution_role
+  arn_ecs_task_role_arn_db_migrator    = module.iam_role.arn_ecs_task_role_arn_db_migrator
+  arn_ecs_task_role_arn_slack_metrics  = module.iam_role.arn_ecs_task_role_arn_slack_metrics
+  secrets_manager_arn_db_main_instance = module.secrets_manager.arn_db_main_instance
+  ecr_url_db_migrator                  = "${module.ecr.url_db_migrator}:44d61d9"   // 一旦ハードコード（のちにespressoでリファクタ予定）
+  ecr_url_slack_metrics                = "${module.ecr.url_slack_metrics}:44d61d9" // 一旦ハードコード（のちにespressoでリファクタ予定）
+  arn_cp_config_bucket                 = "arn:aws:s3:::cp-tomohiro-kawauchi-config-${local.env}"
+}
 
 # module "event_bridge_scheduler" {
 #   source = "../modules/aws/event_bridge_scheduler"
@@ -162,21 +162,21 @@ module "acm_tomoropy_com_ap_northeast_1" {
 #   subnet_ids = local.private_subnet_ids
 # }
 
-# module "target_group" {
-#   source = "../modules/aws/target_group"
-#   env    = local.env
-#   vpc_id = module.vpc.id_vpc
-# }
+module "target_group" {
+  source = "../modules/aws/target_group"
+  env    = local.env
+  vpc_id = module.vpc.id_vpc
+}
 
-# module "alb" {
-#   source                         = "../modules/aws/alb"
-#   env                            = local.env
-#   subnet_ids                     = local.public_subnet_ids
-#   security_group_id              = module.security_group.id_alb
-#   acm_arn                        = module.acm_tomoropy_com_ap_northeast_1.arn_acm_unit
-#   domain                         = local.domain
-#   arn_target_group_slack_metrics = module.target_group.arn_target_group_slack_metrics
-# }
+module "alb" {
+  source                         = "../modules/aws/alb"
+  env                            = local.env
+  subnet_ids                     = local.public_subnet_ids
+  security_group_id              = module.security_group.id_alb
+  acm_arn                        = module.acm_tomoropy_com_ap_northeast_1.arn_acm_unit
+  domain                         = local.domain
+  arn_target_group_slack_metrics = module.target_group.arn_target_group_slack_metrics
+}
 
 module "s3" {
   source = "../modules/aws/s3"

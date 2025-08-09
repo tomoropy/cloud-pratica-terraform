@@ -217,7 +217,7 @@ resource "aws_ecs_task_definition" "slack_metrics_batch" {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
   }
-  lifecycle {
-    ignore_changes = [container_definitions]
-  }
+  # lifecycle {
+  #   ignore_changes = [container_definitions]
+  # }
 }

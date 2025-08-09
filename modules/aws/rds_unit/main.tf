@@ -10,6 +10,7 @@ resource "aws_db_instance" "rds" {
   max_allocated_storage        = 1000
   parameter_group_name         = aws_db_parameter_group.parameter_group.name
   username                     = var.username
+  password                     = random_password.db.result
   apply_immediately            = true
   copy_tags_to_snapshot        = true
   performance_insights_enabled = true
@@ -30,4 +31,9 @@ resource "aws_db_parameter_group" "parameter_group" {
   name        = var.parameter_group_name
   description = "params group"
   family      = var.family
+}
+
+resource "random_password" "db" {
+  length  = 25
+  special = false
 }
